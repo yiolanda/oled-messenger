@@ -157,28 +157,6 @@
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
   .toast.error { background: #ef4444; }
-  .creds-toggle {
-    font-size: 12px; color: var(--muted); text-align: center;
-    cursor: pointer; margin-top: 4px;
-    text-decoration: underline; text-underline-offset: 3px;
-  }
-  .creds-card { display: none; }
-  .creds-card.open { display: block; }
-  .creds-card input {
-    width: 100%; border: 1.5px solid var(--border);
-    border-radius: 12px; padding: 12px 14px;
-    font-family: 'DM Sans', sans-serif; font-size: 14px;
-    color: var(--text); background: #fff; outline: none;
-    margin-bottom: 8px; transition: border-color 0.2s;
-  }
-  .creds-card input:focus { border-color: var(--pink); }
-  .save-creds-btn {
-    width: 100%; background: var(--pink-light);
-    color: var(--pink-dark); border: 1.5px solid var(--border);
-    border-radius: 12px; padding: 11px;
-    font-family: 'DM Sans', sans-serif; font-size: 14px;
-    font-weight: 500; cursor: pointer; transition: all 0.2s;
-  }
 </style>
 </head>
 <body>
@@ -221,40 +199,15 @@
   <button class="save-fav-btn" onclick="saveFavourite()">♡ save as favourite</button>
 </div>
 
-<!-- Credentials -->
-<div class="creds-toggle" onclick="toggleCreds()">⚙ adafruit settings</div>
-<div class="card creds-card" id="credsCard">
-  <div class="section-label">Adafruit IO credentials</div>
-  <input type="text" id="aioUser" placeholder="username (e.g. yiolandaa_)" />
-  <input type="password" id="aioKey" placeholder="AIO key" />
-  <input type="text" id="feedName" placeholder="feed name (e.g. oled-message)" />
-  <button class="save-creds-btn" onclick="saveCreds()">save credentials</button>
-</div>
-
 <div class="toast" id="toast"></div>
 
 <script>
-    const AIO_USER = 'yiolandaa_';
-    const AIO_KEY  = 'aio_kAjS72uzTvzGXZYGcgb1KDbovkjc';
-    const AIO_FEED = 'oled-message';
-    
-    localStorage.setItem('aio_user', 'yiolandaa_');
-    localStorage.setItem('aio_key',  'aio_kAjS72uzTvzGXZYGcgb1KDbovkjc');
-    localStorage.setItem('aio_feed', 'oled-message');
-  
+  const AIO_USER = 'yiolandaa_';
+  const AIO_KEY  = 'aio_kAjS72uzTvzGXZYGcgb1KDbovkjc';
+  const AIO_FEED = 'oled-message';
+
   let favourites = JSON.parse(localStorage.getItem('favourites') || '[]');
   renderFavourites();
-
-  function saveCreds() {
-    localStorage.setItem('aio_user', document.getElementById('aioUser').value.trim());
-    localStorage.setItem('aio_key',  document.getElementById('aioKey').value.trim());
-    localStorage.setItem('aio_feed', document.getElementById('feedName').value.trim());
-    showToast('✓ saved!');
-  }
-
-  function toggleCreds() {
-    document.getElementById('credsCard').classList.toggle('open');
-  }
 
   function updateCount() {
     const len = document.getElementById('msgInput').value.length;
@@ -300,15 +253,11 @@
   }
 
   async function sendMsg(value, btn) {
-    const user = AIO_USER;
-    const key  = AIO_KEY;
-    const feed = AIO_FEED;
-    if (!user || !key) { showToast('⚙ set your credentials first', true); toggleCreds(); return; }
     btn.classList.add('sent');
     try {
-      const res = await fetch(`https://io.adafruit.com/api/v2/${user}/feeds/${feed}/data`, {
+      const res = await fetch(`https://io.adafruit.com/api/v2/${AIO_USER}/feeds/${AIO_FEED}/data`, {
         method: 'POST',
-        headers: { 'X-AIO-Key': key, 'Content-Type': 'application/json' },
+        headers: { 'X-AIO-Key': AIO_KEY, 'Content-Type': 'application/json' },
         body: JSON.stringify({ value })
       });
       if (res.ok) showToast('💌 sent!');
