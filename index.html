@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💌 Send a Message</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #f472b6;
+    --pink-light: #fce7f3;
+    --pink-dark: #be185d;
+    --cream: #fff8f8;
+    --text: #3b1c2c;
+    --muted: #9d6b82;
+    --card: #ffffff;
+    --border: #fcd7e8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px 80px;
+    background-image: radial-gradient(circle at 20% 20%, #fce7f3 0%, transparent 50%),
+                      radial-gradient(circle at 80% 80%, #ffe4e6 0%, transparent 50%);
+  }
+  header { text-align: center; margin-bottom: 32px; }
+  .hearts-deco {
+    font-size: 26px; letter-spacing: 8px; margin-bottom: 8px;
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  h1 { font-family: 'Lora', serif; font-size: 26px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  h1 span { color: var(--pink-dark); font-style: italic; }
+  .subtitle { font-size: 13px; color: var(--muted); font-weight: 300; }
+  .card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 24px;
+    padding: 24px 20px;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 24px rgba(244,114,182,0.08);
+  }
+  .section-label {
+    font-size: 11px; font-weight: 500; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 14px;
+  }
+  .anim-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .anim-btn {
+    border: 1.5px solid var(--border);
+    background: var(--pink-light);
+    border-radius: 16px;
+    padding: 18px 12px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .anim-btn:active { transform: scale(0.97); }
+  .anim-btn.sent { border-color: var(--pink-dark); background: var(--pink-dark); }
+  .anim-btn.sent .anim-name { color: white; }
+  .anim-icon { font-size: 30px; display: block; margin-bottom: 6px; }
+  .anim-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  textarea {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: #fff;
+    resize: none;
+    height: 100px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  textarea:focus { border-color: var(--pink); }
+  textarea::placeholder { color: #d4a0be; }
+  .char-info { font-size: 11px; color: var(--muted); text-align: right; margin-top: 6px; }
+  .char-info.over { color: #ef4444; }
+  .send-btn {
+    width: 100%;
+    background: var(--pink-dark);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 15px;
+    font-family: 'Lora', serif;
+    font-size: 17px;
+    font-style: italic;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: all 0.2s ease;
+  }
+  .send-btn:active { transform: scale(0.98); }
+  .send-btn:disabled { background: #e9a8c8; cursor: not-allowed; }
+  .save-fav-btn {
+    width: 100%;
+    background: transparent;
+    color: var(--pink-dark);
+    border: 1.5px dashed var(--pink);
+    border-radius: 14px;
+    padding: 11px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.2s;
+  }
+  .save-fav-btn:active { transform: scale(0.98); }
+  .favs-list { display: flex; flex-direction: column; gap: 8px; }
+  .fav-empty {
+    text-align: center; color: var(--muted);
+    font-size: 13px; padding: 16px 0; font-style: italic;
+  }
+  .fav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--pink-light);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .fav-item:active { transform: scale(0.98); }
+  .fav-item.sent { border-color: var(--pink-dark); background: var(--pink-dark); }
+  .fav-item.sent .fav-text { color: white; }
+  .fav-text { flex: 1; font-size: 14px; color: var(--text); text-align: left; word-break: break-word; }
+  .fav-send { font-size: 18px; flex-shrink: 0; }
+  .fav-delete {
+    background: none; border: none; cursor: pointer;
+    font-size: 15px; color: var(--muted); padding: 2px 4px;
+    border-radius: 6px; flex-shrink: 0; transition: color 0.2s;
+  }
+  .fav-delete:hover { color: #ef4444; }
+  .toast {
+    position: fixed; bottom: 28px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--text); color: white;
+    padding: 12px 24px; border-radius: 100px;
+    font-size: 14px; font-weight: 500;
+    transition: transform 0.3s ease;
+    white-space: nowrap; z-index: 999;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.error { background: #ef4444; }
+  .creds-toggle {
+    font-size: 12px; color: var(--muted); text-align: center;
+    cursor: pointer; margin-top: 4px;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+  .creds-card { display: none; }
+  .creds-card.open { display: block; }
+  .creds-card input {
+    width: 100%; border: 1.5px solid var(--border);
+    border-radius: 12px; padding: 12px 14px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px;
+    color: var(--text); background: #fff; outline: none;
+    margin-bottom: 8px; transition: border-color 0.2s;
+  }
+  .creds-card input:focus { border-color: var(--pink); }
+  .save-creds-btn {
+    width: 100%; background: var(--pink-light);
+    color: var(--pink-dark); border: 1.5px solid var(--border);
+    border-radius: 12px; padding: 11px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px;
+    font-weight: 500; cursor: pointer; transition: all 0.2s;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hearts-deco">♡ ♡ ♡</div>
+  <h1>send him a <span>little love</span></h1>
+  <p class="subtitle">straight to his screen</p>
+</header>
+
+<!-- Animations -->
+<div class="card">
+  <div class="section-label">send an animation</div>
+  <div class="anim-grid">
+    <button class="anim-btn" onclick="sendMsg('hearts', this)">
+      <span class="anim-icon">💕</span>
+      <span class="anim-name">Floating hearts</span>
+    </button>
+    <button class="anim-btn" onclick="sendMsg('smiley', this)">
+      <span class="anim-icon">😊</span>
+      <span class="anim-name">Smiley face</span>
+    </button>
+  </div>
+</div>
+
+<!-- Favourites -->
+<div class="card">
+  <div class="section-label">favourites</div>
+  <div class="favs-list" id="favsList">
+    <div class="fav-empty" id="favsEmpty">no favourites yet — save one below ♡</div>
+  </div>
+</div>
+
+<!-- Text message -->
+<div class="card">
+  <div class="section-label">send a message</div>
+  <textarea id="msgInput" placeholder="write something sweet..." maxlength="100" oninput="updateCount()"></textarea>
+  <div class="char-info" id="charCount">0 / 100</div>
+  <button class="send-btn" id="sendTextBtn" onclick="sendText()">send it ♡</button>
+  <button class="save-fav-btn" onclick="saveFavourite()">♡ save as favourite</button>
+</div>
+
+<!-- Credentials -->
+<div class="creds-toggle" onclick="toggleCreds()">⚙ adafruit settings</div>
+<div class="card creds-card" id="credsCard">
+  <div class="section-label">Adafruit IO credentials</div>
+  <input type="text" id="aioUser" placeholder="username (e.g. yiolandaa_)" />
+  <input type="password" id="aioKey" placeholder="AIO key" />
+  <input type="text" id="feedName" placeholder="feed name (e.g. oled-message)" />
+  <button class="save-creds-btn" onclick="saveCreds()">save credentials</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  document.getElementById('aioUser').value = localStorage.getItem('aio_user') || '';
+  document.getElementById('aioKey').value  = localStorage.getItem('aio_key')  || '';
+  document.getElementById('feedName').value = localStorage.getItem('aio_feed') || 'oled-message';
+
+  let favourites = JSON.parse(localStorage.getItem('favourites') || '[]');
+  renderFavourites();
+
+  function saveCreds() {
+    localStorage.setItem('aio_user', document.getElementById('aioUser').value.trim());
+    localStorage.setItem('aio_key',  document.getElementById('aioKey').value.trim());
+    localStorage.setItem('aio_feed', document.getElementById('feedName').value.trim());
+    showToast('✓ saved!');
+  }
+
+  function toggleCreds() {
+    document.getElementById('credsCard').classList.toggle('open');
+  }
+
+  function updateCount() {
+    const len = document.getElementById('msgInput').value.length;
+    const el = document.getElementById('charCount');
+    el.textContent = len + ' / 100';
+    el.className = 'char-info' + (len > 90 ? ' over' : '');
+  }
+
+  function saveFavourite() {
+    const msg = document.getElementById('msgInput').value.trim();
+    if (!msg) { showToast('write something first ♡', true); return; }
+    if (favourites.includes(msg)) { showToast('already in favourites!', true); return; }
+    if (favourites.length >= 10) { showToast('max 10 favourites', true); return; }
+    favourites.push(msg);
+    localStorage.setItem('favourites', JSON.stringify(favourites));
+    renderFavourites();
+    showToast('♡ saved to favourites!');
+  }
+
+  function deleteFavourite(index) {
+    favourites.splice(index, 1);
+    localStorage.setItem('favourites', JSON.stringify(favourites));
+    renderFavourites();
+  }
+
+  function renderFavourites() {
+    const list = document.getElementById('favsList');
+    const empty = document.getElementById('favsEmpty');
+    list.querySelectorAll('.fav-item').forEach(el => el.remove());
+    if (favourites.length === 0) { empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    favourites.forEach((msg, i) => {
+      const item = document.createElement('div');
+      item.className = 'fav-item';
+      item.innerHTML = `
+        <span class="fav-text">${msg}</span>
+        <span class="fav-send">💌</span>
+        <button class="fav-delete" onclick="event.stopPropagation(); deleteFavourite(${i})">✕</button>
+      `;
+      item.onclick = () => sendMsg(msg, item);
+      list.appendChild(item);
+    });
+  }
+
+  async function sendMsg(value, btn) {
+    const user = localStorage.getItem('aio_user');
+    const key  = localStorage.getItem('aio_key');
+    const feed = localStorage.getItem('aio_feed') || 'oled-message';
+    if (!user || !key) { showToast('⚙ set your credentials first', true); toggleCreds(); return; }
+    btn.classList.add('sent');
+    try {
+      const res = await fetch(`https://io.adafruit.com/api/v2/${user}/feeds/${feed}/data`, {
+        method: 'POST',
+        headers: { 'X-AIO-Key': key, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value })
+      });
+      if (res.ok) showToast('💌 sent!');
+      else showToast('something went wrong', true);
+    } catch(e) {
+      showToast('connection error', true);
+    }
+    setTimeout(() => btn.classList.remove('sent'), 2000);
+  }
+
+  async function sendText() {
+    const msg = document.getElementById('msgInput').value.trim();
+    if (!msg) { showToast('write something first ♡', true); return; }
+    const btn = document.getElementById('sendTextBtn');
+    btn.disabled = true;
+    btn.textContent = 'sending...';
+    await sendMsg(msg, { classList: { add: ()=>{}, remove: ()=>{} } });
+    btn.disabled = false;
+    btn.textContent = 'send it ♡';
+    document.getElementById('msgInput').value = '';
+    updateCount();
+  }
+
+  function showToast(msg, isError = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast' + (isError ? ' error' : '') + ' show';
+    setTimeout(() => t.className = 'toast', 2500);
+  }
+</script>
+</body>
+</html>
