@@ -234,10 +234,14 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  document.getElementById('aioUser').value = localStorage.getItem('aio_user') || '';
-  document.getElementById('aioKey').value  = localStorage.getItem('aio_key')  || '';
-  document.getElementById('feedName').value = localStorage.getItem('aio_feed') || 'oled-message';
-
+    document.getElementById('aioUser').value = 'yiolandaa_';
+    document.getElementById('aioKey').value  = 'aio_kAjS72uzTvzGXZYGcgb1KDbovkjc';
+    document.getElementById('feedName').value = 'oled-message';
+    
+    localStorage.setItem('aio_user', 'yiolandaa_');
+    localStorage.setItem('aio_key',  'aio_kAjS72uzTvzGXZYGcgb1KDbovkjc');
+    localStorage.setItem('aio_feed', 'oled-message');
+  
   let favourites = JSON.parse(localStorage.getItem('favourites') || '[]');
   renderFavourites();
 
