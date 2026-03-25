@@ -300,9 +300,9 @@
   }
 
   async function sendMsg(value, btn) {
-    const user = localStorage.getItem('aio_user');
-    const key  = localStorage.getItem('aio_key');
-    const feed = localStorage.getItem('aio_feed') || 'oled-message';
+    const user = AIO_USER;
+    const key  = AIO_KEY;
+    const feed = AIO_FEED;
     if (!user || !key) { showToast('⚙ set your credentials first', true); toggleCreds(); return; }
     btn.classList.add('sent');
     try {
